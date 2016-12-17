@@ -10,5 +10,7 @@
         <Canvas x:Name="ClickCanvas" HorizontalAlignment="Left" Margin="10,10,0,0" Width="250" Height="250" VerticalAlignment="Top" MouseEnter="ClickCanvas_MouseEnter" MouseLeave="ClickCanvas_MouseLeave" MouseUp="ClickCanvas_MouseUp" Background="White">
             <Label x:Name="label" Content="Click me" Canvas.Left="30" Canvas.Top="80" FontSize="48"/>
         </Canvas>
+        <TextBox x:Name="TextBoxCpu" HorizontalAlignment="Right" Margin="0,41,10,10" TextWrapping="Wrap" Width="171" VerticalScrollBarVisibility="Auto"/>
+        <Label x:Name="label1" Content="CPU speed at your clicks:" HorizontalAlignment="Right" Margin="0,10,39,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>

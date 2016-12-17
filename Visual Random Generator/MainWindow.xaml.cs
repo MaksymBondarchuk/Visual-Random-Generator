@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -9,6 +10,9 @@ namespace Visual_Random_Generator
 {
     public partial class MainWindow
     {
+        [DllImport("../../Assemblies/CPU Analyser.dll")]
+        private static extern uint GetCurrentCpuRate();
+
         private System.Windows.Threading.DispatcherTimer ZoomTimer { get; } = new System.Windows.Threading.DispatcherTimer();
         private bool IsZoomed { get; set; }
 
@@ -17,7 +21,6 @@ namespace Visual_Random_Generator
             InitializeComponent();
 
             DrawLines();
-            //ZoomAnimation(1, 1.1);
 
             ZoomTimer.Tick += TimerMethod;
             ZoomTimer.Interval = TimeSpan.FromSeconds(1);
@@ -74,7 +77,6 @@ namespace Visual_Random_Generator
 
             ClickCanvas.Children.Add(line);
         }
-        #endregion
 
         private void ZoomAnimation(double from, double to)
         {
@@ -85,21 +87,6 @@ namespace Visual_Random_Generator
             trans.BeginAnimation(ScaleTransform.ScaleXProperty, anim);
             trans.BeginAnimation(ScaleTransform.ScaleYProperty, anim);
 
-        }
-
-        private void ClickCanvas_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            ClickCanvas.Background = new SolidColorBrush(Colors.AliceBlue);
-        }
-
-        private void ClickCanvas_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            ClickCanvas.Background = new SolidColorBrush(Colors.White);
-        }
-
-        private async void ClickCanvas_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            await CanvasFlash();
         }
 
         private async Task CanvasFlash()
@@ -122,5 +109,25 @@ namespace Visual_Random_Generator
             };
             cb.BeginAnimation(SolidColorBrush.ColorProperty, da1);
         }
+
+        private void ClickCanvas_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ClickCanvas.Background = new SolidColorBrush(Colors.AliceBlue);
+        }
+
+        private void ClickCanvas_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ClickCanvas.Background = new SolidColorBrush(Colors.White);
+        }
+
+        private async void ClickCanvas_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            TextBoxCpu.AppendText($"{GetCurrentCpuRate()}\n");
+            TextBoxCpu.ScrollToEnd();
+            //TextBoxCpu.Text += $"{GetCurrentCpuRate()}\n";
+
+            await CanvasFlash();
+        }
+        #endregion
     }
 }
