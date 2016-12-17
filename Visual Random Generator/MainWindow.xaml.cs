@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
@@ -34,19 +36,7 @@ namespace Visual_Random_Generator
         private void DrawLines()
         {
             const int thikness = 4;
-            var line = new Line
-            {
-                X1 = 15,
-                Y1 = 15,
-                X2 = 50,
-                Y2 = 15,
-                StrokeThickness = thikness,
-                Stroke = Brushes.Black
-            };
-
-            ClickCanvas.Children.Add(line);
-
-            const int starter = 15;
+            const int starter = 4;
             const int length = 50;
             var bootomX = ClickCanvas.Width;
             var bootomY = ClickCanvas.Height;
@@ -97,5 +87,40 @@ namespace Visual_Random_Generator
 
         }
 
+        private void ClickCanvas_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ClickCanvas.Background = new SolidColorBrush(Colors.AliceBlue);
+        }
+
+        private void ClickCanvas_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ClickCanvas.Background = new SolidColorBrush(Colors.White);
+        }
+
+        private async void ClickCanvas_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            await CanvasFlash();
+        }
+
+        private async Task CanvasFlash()
+        {
+            const int animationWait = 150;
+            var cb = ClickCanvas.Background;
+            // ReSharper disable once PossibleNullReferenceException
+            var convertFromString = (Color)ColorConverter.ConvertFromString("#FF007ACC");
+            var da = new ColorAnimation
+            {
+                To = convertFromString,
+                Duration = new Duration(TimeSpan.FromMilliseconds(animationWait))
+            };
+            cb.BeginAnimation(SolidColorBrush.ColorProperty, da);
+            await Task.Delay(animationWait);
+            var da1 = new ColorAnimation
+            {
+                To = Colors.AliceBlue,
+                Duration = new Duration(TimeSpan.FromMilliseconds(animationWait))
+            };
+            cb.BeginAnimation(SolidColorBrush.ColorProperty, da1);
+        }
     }
 }
