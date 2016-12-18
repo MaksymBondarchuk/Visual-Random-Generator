@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Numerics;
-using Kalyna;
+using Microsoft.Win32;
 
 namespace Visual_Random_Generator
 {
@@ -20,10 +21,9 @@ namespace Visual_Random_Generator
         private System.Windows.Threading.DispatcherTimer ZoomTimer { get; } = new System.Windows.Threading.DispatcherTimer();
         private bool IsZoomed { get; set; }
 
-        private Block S { get; set; } = new Block { Data = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
-        private Block D { get; set; } = new Block { Data = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+        private Algorithm Algorithm { get; } = new Algorithm();
 
-        private uint PrevCpuRate { get; set; } = 0;
+        private uint PrevCpuRate { get; set; }
 
         public MainWindow()
         {
@@ -40,6 +40,12 @@ namespace Visual_Random_Generator
 
             TextBoxD.Visibility = Visibility.Hidden;
             LabelD.Visibility = Visibility.Hidden;
+
+            TextBoxK.Visibility = Visibility.Hidden;
+            LabelK.Visibility = Visibility.Hidden;
+
+            TextBoxRandom.Visibility = Visibility.Hidden;
+            LabelRandom.Visibility = Visibility.Hidden;
         }
 
         #region Canvas
@@ -148,30 +154,87 @@ namespace Visual_Random_Generator
             }
             else
             {
-                var bi = new BigInteger(S.Data.ToArray());
+                var bi = new BigInteger(Algorithm.S.Data.ToArray());
                 bi *= Math.Abs(cpuRate - PrevCpuRate);
                 if (bi < new BigInteger(Math.Pow(2, 128)))
-                    S.Data = new List<byte>(bi.ToByteArray());
+                    Algorithm.S.Data = new List<byte>(bi.ToByteArray());
                 else
                 {
-                    S.Data = new List<byte>(bi.ToByteArray().Where((t, idx) => idx < 16));
-                    ClickCanvas.Visibility = Visibility.Hidden;
-                    ZoomTimer.Stop();
-
-                    LabelMain.Content = "Thank you";
-                    LabelMain.Foreground = Brushes.Green;
-
-                    TextBoxD.Visibility = Visibility.Visible;
-                    LabelD.Visibility = Visibility.Visible;
-                    D.Data = new List<byte>(new BigInteger(DateTime.UtcNow.Ticks).ToByteArray());
-                    TextBoxD.Text = new BigInteger(D.Data.ToArray()).ToString("X32");
+                    Algorithm.S.Data = new List<byte>(bi.ToByteArray().Where((t, idx) => idx < 16));
+                    await RunAlgorithm();
                 }
-                TextBoxS.Text = new BigInteger(S.Data.ToArray()).ToString("X32");
+                TextBoxS.Text = new BigInteger(Algorithm.S.Data.ToArray()).ToString("X32");
             }
             PrevCpuRate = cpuRate;
 
             await CanvasFlash();
         }
         #endregion
+
+        private async Task RunAlgorithm()
+        {
+            ClickCanvas.Visibility = Visibility.Hidden;
+            ZoomTimer.Stop();
+
+            LabelMain.Content = "Thank you";
+            LabelMain.Foreground = Brushes.Green;
+
+            TextBoxD.Visibility = Visibility.Visible;
+            LabelD.Visibility = Visibility.Visible;
+            TextBoxK.Visibility = Visibility.Visible;
+            LabelK.Visibility = Visibility.Visible;
+            TextBoxRandom.Visibility = Visibility.Visible;
+            LabelRandom.Visibility = Visibility.Visible;
+
+            Algorithm.D.Data = new List<byte>(new BigInteger(DateTime.UtcNow.Ticks).ToByteArray());
+            var howMuchMore = 16 - Algorithm.D.Data.Count;
+            for (var i = 0; i < howMuchMore; i++)
+                Algorithm.D.Data.Add(0);
+            TextBoxD.Text = new BigInteger(Algorithm.D.Data.ToArray()).ToString("X32");
+            TextBoxK.Text = new BigInteger(Algorithm.K.Data.ToArray()).ToString("X32");
+
+            await Task.Delay(1000);
+            LabelMain.Foreground = Brushes.Black;
+            await GenerateRandomValue();
+        }
+
+        private async Task GenerateRandomValue()
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            while (!Algorithm.IsCompleted)
+            {
+
+                Algorithm.Stage3();
+                Algorithm.GenerateRandomBit();
+
+                var randomValueText = Algorithm.RandomValue.Data.Aggregate("", (current, b) => b.ToString("X2") + current);
+                TextBoxRandom.Text = randomValueText;
+                //TextBoxRandom.Text = new BigInteger(Algorithm.RandomValue.Data.ToArray()).ToString("X");
+
+                if (Algorithm.CurrentByte != 0)
+                {
+                    var estimated = watch.Elapsed.TotalSeconds / Algorithm.CurrentByte *
+                                    (Algorithm.RandomValueSize - Algorithm.CurrentByte);
+                    LabelMain.Content = $"Generated {Algorithm.CurrentByte} bytes." +
+                                        $"\nTime left: {TimeSpan.FromSeconds(Math.Ceiling(estimated))}";
+                }
+                else
+                    LabelMain.Content = $"Generated {Algorithm.CurrentByte} bytes.";
+
+                await Task.Delay(1);
+            }
+            watch.Stop();
+
+            var dlg = new SaveFileDialog
+            {
+                DefaultExt = ".txt",
+                Filter = "Text file (.txt)|*.txt"
+            };
+            if (dlg.ShowDialog() == true)
+                using (var writer = new BinaryWriter(File.Open(dlg.FileName, FileMode.Create)))
+                {
+                    writer.Write(Algorithm.RandomValue.Data.ToArray());
+                }
+        }
     }
 }
