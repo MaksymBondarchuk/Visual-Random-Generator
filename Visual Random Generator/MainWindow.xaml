@@ -5,14 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Visual_Random_Generator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="482" Width="889" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="592" Width="1079" WindowStartupLocation="CenterScreen">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="415*"/>
+            <RowDefinition Height="146*"/>
+        </Grid.RowDefinitions>
         <Canvas x:Name="ClickCanvas" HorizontalAlignment="Left" Margin="10,10,0,0" Width="250" Height="250" VerticalAlignment="Top" MouseEnter="ClickCanvas_MouseEnter" MouseLeave="ClickCanvas_MouseLeave" MouseUp="ClickCanvas_MouseUp" Background="White">
             <Label x:Name="label" Content="Click me" Canvas.Left="30" Canvas.Top="80" FontSize="48"/>
         </Canvas>
-        <TextBox x:Name="TextBoxCpu" HorizontalAlignment="Right" Margin="0,41,10,10" TextWrapping="Wrap" Width="171" VerticalScrollBarVisibility="Auto"/>
-        <Label x:Name="LabelCpu" Content="CPU speed at your clicks" HorizontalAlignment="Right" Margin="0,10,39,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextBoxS" HorizontalAlignment="Left" Height="23" Margin="10,0,0,86" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="230" Text="00000000000000000000000000000001" FontFamily="Consolas" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-        <Label x:Name="LabelS" Content="Current S value" HorizontalAlignment="Left" Margin="10,0,0,114" VerticalAlignment="Bottom" RenderTransformOrigin="0.263,0"/>
+        <TextBox x:Name="TextBoxCpu" HorizontalAlignment="Right" Margin="0,41,10,10" TextWrapping="Wrap" Width="171" VerticalScrollBarVisibility="Auto" Grid.RowSpan="2" HorizontalContentAlignment="Right"/>
+        <Label x:Name="LabelCpu" Content="CPU speed at your clicks, Hz" HorizontalAlignment="Right" Margin="0,10,22,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBoxS" HorizontalAlignment="Left" Height="23" Margin="10,0,0,86" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="230" Text="00000000000000000000000000000001" FontFamily="Consolas" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.Row="1"/>
+        <Label x:Name="LabelS" Content="Current S value" HorizontalAlignment="Left" Margin="10,0,0,114" VerticalAlignment="Bottom" RenderTransformOrigin="0.263,0" Grid.Row="1"/>
+        <Label x:Name="LabelMain" Content="Please click left area" HorizontalAlignment="Left" Margin="340,236,0,0" VerticalAlignment="Top" FontSize="48"/>
+        <TextBox x:Name="TextBoxD" HorizontalAlignment="Left" Height="23" Margin="255,0,0,86" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="230" Text="00000000000000000000000000000001" FontFamily="Consolas" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.Row="1"/>
+        <Label x:Name="LabelD" Content="D value" HorizontalAlignment="Left" Margin="255,0,0,114" VerticalAlignment="Bottom" RenderTransformOrigin="0.263,0" Grid.Row="1"/>
+        <!--<Line StrokeThickness="3" Stroke="Black" X1="595" Y1="230" X2="290" Y2="126"></Line>
+        <Line StrokeThickness="3" Stroke="Black" X1="290" Y1="126" X2="320" Y2="126"></Line>
+        <Line StrokeThickness="3" Stroke="Black" X1="290" Y1="126" X2="314" Y2="144"></Line>
+        <Line StrokeThickness="1" Stroke="Black" X1="289" Y1="125" X2="320" Y2="126"></Line>
+        <Line StrokeThickness="1" Stroke="Black" X1="287" Y1="126" X2="314" Y2="144"></Line>-->
     </Grid>
 </Window>

@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Numerics;
+using Kalyna;
 
 namespace Visual_Random_Generator
 {
@@ -19,7 +20,8 @@ namespace Visual_Random_Generator
         private System.Windows.Threading.DispatcherTimer ZoomTimer { get; } = new System.Windows.Threading.DispatcherTimer();
         private bool IsZoomed { get; set; }
 
-        private List<byte> S { get; set; } = new List<byte> { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        private Block S { get; set; } = new Block { Data = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+        private Block D { get; set; } = new Block { Data = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
         private uint PrevCpuRate { get; set; } = 0;
 
@@ -35,6 +37,9 @@ namespace Visual_Random_Generator
 
             TextBoxS.Visibility = Visibility.Hidden;
             LabelS.Visibility = Visibility.Hidden;
+
+            TextBoxD.Visibility = Visibility.Hidden;
+            LabelD.Visibility = Visibility.Hidden;
         }
 
         #region Canvas
@@ -143,17 +148,25 @@ namespace Visual_Random_Generator
             }
             else
             {
-                var bi = new BigInteger(S.ToArray());
+                var bi = new BigInteger(S.Data.ToArray());
                 bi *= Math.Abs(cpuRate - PrevCpuRate);
                 if (bi < new BigInteger(Math.Pow(2, 128)))
-                    S = new List<byte>(bi.ToByteArray());
+                    S.Data = new List<byte>(bi.ToByteArray());
                 else
                 {
-                    S = new List<byte>(bi.ToByteArray().Where((t, idx) => idx < 16));
+                    S.Data = new List<byte>(bi.ToByteArray().Where((t, idx) => idx < 16));
                     ClickCanvas.Visibility = Visibility.Hidden;
                     ZoomTimer.Stop();
+
+                    LabelMain.Content = "Thank you";
+                    LabelMain.Foreground = Brushes.Green;
+
+                    TextBoxD.Visibility = Visibility.Visible;
+                    LabelD.Visibility = Visibility.Visible;
+                    D.Data = new List<byte>(new BigInteger(DateTime.UtcNow.Ticks).ToByteArray());
+                    TextBoxD.Text = new BigInteger(D.Data.ToArray()).ToString("X32");
                 }
-                TextBoxS.Text = new BigInteger(S.ToArray()).ToString("X32");
+                TextBoxS.Text = new BigInteger(S.Data.ToArray()).ToString("X32");
             }
             PrevCpuRate = cpuRate;
 
