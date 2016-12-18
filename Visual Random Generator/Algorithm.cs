@@ -4,22 +4,22 @@ namespace Visual_Random_Generator
 {
     public class Algorithm
     {
-        public const int RandomValueSize = 10;
+        public const int RandomValueSize = 1024;
 
         public Block S { get; private set; } = new Block { Data = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
-        public Block BackupS { get; private set; } = new Block();
+        private Block BackupS { get; set; } = new Block();
         public Block D { get; } = new Block();
         public Block K { get; } = new Block { Data = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 } };
         private Block R { get; set; } = new Block();
         private Block I { get; set; } = new Block();
         private Block X { get; set; } = new Block();
         private Block T { get; set; } = new Block();
-        public Block RandomValue { get; set; } = new Block();
+        public Block RandomValue { get; } = new Block();
 
-        public int CurrentByte { get; private set; } = 0;
-        private int CurrentBit { get; set; } = 0;
+        public int CurrentByte { get; private set; }
+        private int CurrentBit { get; set; }
 
-        public bool IsCompleted { get; set; }
+        public bool IsCompleted { get; private set; }
 
         private Kalyna.Algorithm Kalyna { get; } = new Kalyna.Algorithm();
 

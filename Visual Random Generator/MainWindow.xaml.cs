@@ -48,6 +48,11 @@ namespace Visual_Random_Generator
 
             TextBoxRandom.Visibility = Visibility.Hidden;
             LabelRandom.Visibility = Visibility.Hidden;
+
+            TextBoxBitK.Visibility = Visibility.Hidden;
+            TextBoxBitS.Visibility = Visibility.Hidden;
+            ButtonK.Visibility = Visibility.Hidden;
+            ButtonS.Visibility = Visibility.Hidden;
         }
 
         #region Canvas
@@ -265,6 +270,11 @@ namespace Visual_Random_Generator
             LabelMain.Content = "Random value generated";
             ZoomTimer.Start();
             Algorithm.Reset();
+
+            TextBoxBitK.Visibility = Visibility.Visible;
+            TextBoxBitS.Visibility = Visibility.Visible;
+            ButtonK.Visibility = Visibility.Visible;
+            ButtonS.Visibility = Visibility.Visible;
         }
 
         private void TextBoxBitS_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)

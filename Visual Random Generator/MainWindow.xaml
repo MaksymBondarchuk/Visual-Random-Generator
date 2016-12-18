@@ -3,19 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Visual_Random_Generator"
         mc:Ignorable="d"
-        Title="MainWindow" Height="768" Width="1376.3" WindowStartupLocation="CenterScreen">
+        Title="Visual Random Generator" Height="768" Width="1376.3" WindowStartupLocation="CenterScreen">
     <Grid>
-        <!--<Grid.RowDefinitions>
-            <RowDefinition Height="415*"/>
-            <RowDefinition Height="146*"/>
-        </Grid.RowDefinitions>-->
         <Canvas x:Name="ClickCanvas" HorizontalAlignment="Left" Margin="10,10,0,0" Width="250" Height="250" VerticalAlignment="Top" MouseEnter="ClickCanvas_MouseEnter" MouseLeave="ClickCanvas_MouseLeave" MouseUp="ClickCanvas_MouseUp" Background="White">
             <Label x:Name="LabelOnCanvas" Content="Click me" Canvas.Top="80" FontSize="48" HorizontalContentAlignment="Center" Width="250"/>
         </Canvas>
         <TextBox x:Name="TextBoxCpu" HorizontalAlignment="Right" Margin="0,41,10,10" TextWrapping="Wrap" Width="171" VerticalScrollBarVisibility="Auto" Grid.RowSpan="2" HorizontalContentAlignment="Right"/>
-        <Label x:Name="LabelCpu" Content="CPU speed at your clicks, Hz" HorizontalAlignment="Right" Margin="0,10,22,0" VerticalAlignment="Top"/>
+        <Label Content="CPU speed at your clicks, Hz" HorizontalAlignment="Right" Margin="0,10,22,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TextBoxS" HorizontalAlignment="Left" Height="23" Margin="10,0,0,243" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="230" Text="00000000000000000000000000000001" FontFamily="Consolas" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
         <Label x:Name="LabelS" Content="Current S value" HorizontalAlignment="Left" Margin="10,0,0,266" VerticalAlignment="Bottom" RenderTransformOrigin="0.263,0"/>
         <Label x:Name="LabelMain" Content="Please click left area" HorizontalAlignment="Left" Margin="350,203,0,0" VerticalAlignment="Top" FontSize="48"/>
@@ -29,10 +24,5 @@
         <TextBox x:Name="TextBoxBitK" HorizontalAlignment="Right" Height="23" Margin="0,67,266,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" PreviewTextInput="TextBoxBitS_PreviewTextInput" VerticalContentAlignment="Center"/>
         <Button x:Name="ButtonS" Content="Change S bit" HorizontalAlignment="Right" Margin="0,42,186,0" VerticalAlignment="Top" Width="75" Click="ButtonS_Click"/>
         <Button x:Name="ButtonK" Content="Change K bit" HorizontalAlignment="Right" Margin="0,70,186,0" VerticalAlignment="Top" Width="75" Click="ButtonK_Click"/>
-        <!--<Line StrokeThickness="3" Stroke="Black" X1="595" Y1="230" X2="290" Y2="126"></Line>
-        <Line StrokeThickness="3" Stroke="Black" X1="290" Y1="126" X2="320" Y2="126"></Line>
-        <Line StrokeThickness="3" Stroke="Black" X1="290" Y1="126" X2="314" Y2="144"></Line>
-        <Line StrokeThickness="1" Stroke="Black" X1="289" Y1="125" X2="320" Y2="126"></Line>
-        <Line StrokeThickness="1" Stroke="Black" X1="287" Y1="126" X2="314" Y2="144"></Line>-->
     </Grid>
 </Window>
