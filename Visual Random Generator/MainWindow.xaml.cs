@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Numerics;
 
 namespace Visual_Random_Generator
 {
@@ -16,6 +19,10 @@ namespace Visual_Random_Generator
         private System.Windows.Threading.DispatcherTimer ZoomTimer { get; } = new System.Windows.Threading.DispatcherTimer();
         private bool IsZoomed { get; set; }
 
+        private List<byte> S { get; set; } = new List<byte> { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+        private uint PrevCpuRate { get; set; } = 0;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -25,6 +32,9 @@ namespace Visual_Random_Generator
             ZoomTimer.Tick += TimerMethod;
             ZoomTimer.Interval = TimeSpan.FromSeconds(1);
             ZoomTimer.Start();
+
+            TextBoxS.Visibility = Visibility.Hidden;
+            LabelS.Visibility = Visibility.Hidden;
         }
 
         #region Canvas
@@ -122,9 +132,30 @@ namespace Visual_Random_Generator
 
         private async void ClickCanvas_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            TextBoxCpu.AppendText($"{GetCurrentCpuRate()}\n");
+            var cpuRate = GetCurrentCpuRate();
+            TextBoxCpu.AppendText($"{cpuRate}\n");
             TextBoxCpu.ScrollToEnd();
-            //TextBoxCpu.Text += $"{GetCurrentCpuRate()}\n";
+
+            if (PrevCpuRate == 0)
+            {
+                TextBoxS.Visibility = Visibility.Visible;
+                LabelS.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                var bi = new BigInteger(S.ToArray());
+                bi *= Math.Abs(cpuRate - PrevCpuRate);
+                if (bi < new BigInteger(Math.Pow(2, 128)))
+                    S = new List<byte>(bi.ToByteArray());
+                else
+                {
+                    S = new List<byte>(bi.ToByteArray().Where((t, idx) => idx < 16));
+                    ClickCanvas.Visibility = Visibility.Hidden;
+                    ZoomTimer.Stop();
+                }
+                TextBoxS.Text = new BigInteger(S.ToArray()).ToString("X32");
+            }
+            PrevCpuRate = cpuRate;
 
             await CanvasFlash();
         }

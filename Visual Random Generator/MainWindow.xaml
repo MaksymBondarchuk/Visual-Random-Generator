@@ -11,6 +11,8 @@
             <Label x:Name="label" Content="Click me" Canvas.Left="30" Canvas.Top="80" FontSize="48"/>
         </Canvas>
         <TextBox x:Name="TextBoxCpu" HorizontalAlignment="Right" Margin="0,41,10,10" TextWrapping="Wrap" Width="171" VerticalScrollBarVisibility="Auto"/>
-        <Label x:Name="label1" Content="CPU speed at your clicks:" HorizontalAlignment="Right" Margin="0,10,39,0" VerticalAlignment="Top"/>
+        <Label x:Name="LabelCpu" Content="CPU speed at your clicks" HorizontalAlignment="Right" Margin="0,10,39,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBoxS" HorizontalAlignment="Left" Height="23" Margin="10,0,0,86" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="230" Text="00000000000000000000000000000001" FontFamily="Consolas" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <Label x:Name="LabelS" Content="Current S value" HorizontalAlignment="Left" Margin="10,0,0,114" VerticalAlignment="Bottom" RenderTransformOrigin="0.263,0"/>
     </Grid>
 </Window>
