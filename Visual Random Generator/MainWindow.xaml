@@ -1,11 +1,14 @@
-﻿<Window x:Class="Visual_Random_Generator.MainWindow"
+﻿<Window x:Name="WindowMain" x:Class="Visual_Random_Generator.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Visual Random Generator" Height="768" Width="1376.3" WindowStartupLocation="CenterScreen">
+        Title="Visual Random Generator" Height="768" Width="1376.3" WindowStartupLocation="CenterScreen" Background="White">
     <Grid>
+        <Canvas x:Name="FlashCanvas" Background="White">
+            <Label x:Name="label" Content="Thank you" Canvas.Left="530" Canvas.Top="265" FontSize="72" Foreground="White"/>
+        </Canvas>
         <Canvas x:Name="ClickCanvas" HorizontalAlignment="Left" Margin="10,10,0,0" Width="250" Height="250" VerticalAlignment="Top" MouseEnter="ClickCanvas_MouseEnter" MouseLeave="ClickCanvas_MouseLeave" MouseUp="ClickCanvas_MouseUp" Background="White">
             <Label x:Name="LabelOnCanvas" Content="Click me" Canvas.Top="80" FontSize="48" HorizontalContentAlignment="Center" Width="250"/>
         </Canvas>
@@ -13,7 +16,7 @@
         <Label Content="CPU speed at your clicks, Hz" HorizontalAlignment="Right" Margin="0,10,22,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TextBoxS" HorizontalAlignment="Left" Height="23" Margin="10,0,0,243" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="230" Text="00000000000000000000000000000001" FontFamily="Consolas" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
         <Label x:Name="LabelS" Content="Current S value" HorizontalAlignment="Left" Margin="10,0,0,266" VerticalAlignment="Bottom" RenderTransformOrigin="0.263,0"/>
-        <Label x:Name="LabelMain" Content="Please click left area" HorizontalAlignment="Left" Margin="350,203,0,0" VerticalAlignment="Top" FontSize="48"/>
+        <Label x:Name="LabelMain" Content="Please click left area" HorizontalAlignment="Left" Margin="350,203,0,0" VerticalAlignment="Top" FontSize="48" Panel.ZIndex="5"/>
         <TextBox x:Name="TextBoxD" HorizontalAlignment="Left" Height="23" Margin="255,0,0,243" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="230" Text="00000000000000000000000000000001" FontFamily="Consolas" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
         <Label x:Name="LabelD" Content="D value" HorizontalAlignment="Left" Margin="255,0,0,266" VerticalAlignment="Bottom" RenderTransformOrigin="0.263,0"/>
         <TextBox x:Name="TextBoxRandom" Height="205" Margin="10,0,201,10" TextWrapping="Wrap" VerticalAlignment="Bottom" FontFamily="Consolas"/>

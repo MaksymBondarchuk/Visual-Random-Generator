@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Numerics;
+using System.Windows.Controls;
 using Microsoft.Win32;
 
 namespace Visual_Random_Generator
@@ -18,6 +19,7 @@ namespace Visual_Random_Generator
         [DllImport("../../Assemblies/CPU Analyser.dll")]
         private static extern uint GetCurrentCpuRate();
 
+        #region Properties
         private System.Windows.Threading.DispatcherTimer ZoomTimer { get; } = new System.Windows.Threading.DispatcherTimer();
         private bool IsZoomed { get; set; }
         private bool IsAlreadyRun { get; set; }
@@ -26,6 +28,7 @@ namespace Visual_Random_Generator
         private Algorithm Algorithm { get; } = new Algorithm();
 
         private uint PrevCpuRate { get; set; }
+        #endregion
 
         public MainWindow()
         {
@@ -113,37 +116,6 @@ namespace Visual_Random_Generator
             ClickCanvas.Children.Add(line);
         }
 
-        private void ZoomAnimation(double from, double to)
-        {
-            ScaleTransform trans = new ScaleTransform();
-            ClickCanvas.RenderTransform = trans;
-
-            DoubleAnimation anim = new DoubleAnimation(from, to, TimeSpan.FromSeconds(1));
-            trans.BeginAnimation(ScaleTransform.ScaleXProperty, anim);
-            trans.BeginAnimation(ScaleTransform.ScaleYProperty, anim);
-        }
-
-        private async Task CanvasFlash()
-        {
-            const int animationWait = 150;
-            var cb = ClickCanvas.Background;
-            // ReSharper disable once PossibleNullReferenceException
-            var convertFromString = (Color)ColorConverter.ConvertFromString("#FF007ACC");
-            var da = new ColorAnimation
-            {
-                To = convertFromString,
-                Duration = new Duration(TimeSpan.FromMilliseconds(animationWait))
-            };
-            cb.BeginAnimation(SolidColorBrush.ColorProperty, da);
-            await Task.Delay(animationWait);
-            var da1 = new ColorAnimation
-            {
-                To = Colors.AliceBlue,
-                Duration = new Duration(TimeSpan.FromMilliseconds(animationWait))
-            };
-            cb.BeginAnimation(SolidColorBrush.ColorProperty, da1);
-        }
-
         private void ClickCanvas_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             ClickCanvas.Background = new SolidColorBrush(Colors.AliceBlue);
@@ -193,6 +165,65 @@ namespace Visual_Random_Generator
         }
         #endregion
 
+        #region Animation
+
+        private void ZoomAnimation(double from, double to)
+        {
+            ScaleTransform trans = new ScaleTransform();
+            ClickCanvas.RenderTransform = trans;
+
+            DoubleAnimation anim = new DoubleAnimation(from, to, TimeSpan.FromSeconds(1));
+            trans.BeginAnimation(ScaleTransform.ScaleXProperty, anim);
+            trans.BeginAnimation(ScaleTransform.ScaleYProperty, anim);
+        }
+
+        private async Task CanvasFlash()
+        {
+            const int animationWait = 150;
+            var cb = ClickCanvas.Background;
+            // ReSharper disable once PossibleNullReferenceException
+            var convertFromString = (Color)ColorConverter.ConvertFromString("#FF007ACC");
+            var da = new ColorAnimation
+            {
+                To = convertFromString,
+                Duration = new Duration(TimeSpan.FromMilliseconds(animationWait))
+            };
+            cb.BeginAnimation(SolidColorBrush.ColorProperty, da);
+            await Task.Delay(animationWait);
+            var da1 = new ColorAnimation
+            {
+                To = IsTimeToStopZoomTimer ? Colors.White : Colors.AliceBlue,
+                Duration = new Duration(TimeSpan.FromMilliseconds(animationWait))
+            };
+            cb.BeginAnimation(SolidColorBrush.ColorProperty, da1);
+        }
+
+        private async Task WindowFlash(Color color)
+        {
+            const int animationWait = 500;
+            FlashCanvas.Background = new SolidColorBrush(Colors.White);
+            Panel.SetZIndex(FlashCanvas, 100);
+            var cb = FlashCanvas.Background;
+            var da = new ColorAnimation
+            {
+                To = color,
+                Duration = new Duration(TimeSpan.FromMilliseconds(animationWait))
+            };
+            cb.BeginAnimation(SolidColorBrush.ColorProperty, da);
+            await Task.Delay(animationWait + 3000);
+            var da1 = new ColorAnimation
+            {
+                To = Colors.White,
+                Duration = new Duration(TimeSpan.FromMilliseconds(animationWait))
+            };
+            cb.BeginAnimation(SolidColorBrush.ColorProperty, da1);
+            Panel.SetZIndex(FlashCanvas, 0);
+            //ColorAnimation ca = new ColorAnimation(Colors.Blue, new Duration(TimeSpan.FromSeconds(4)));
+            //Background = new SolidColorBrush(Colors.Red);
+            //Background.BeginAnimation(SolidColorBrush.ColorProperty, ca);
+        }
+        #endregion
+
         private async Task RunAlgorithm()
         {
             //ClickCanvas.Visibility = Visibility.Hidden;
@@ -200,8 +231,10 @@ namespace Visual_Random_Generator
 
             if (!IsAlreadyRun)
             {
-                LabelMain.Content = "Thank you";
-                LabelMain.Foreground = Brushes.Green;
+                // ReSharper disable once PossibleNullReferenceException
+                await WindowFlash((Color)ColorConverter.ConvertFromString("#FF007ACC"));
+                //LabelMain.Content = "Thank you";
+                //LabelMain.Foreground = Brushes.Green;
 
                 TextBoxD.Visibility = Visibility.Visible;
                 LabelD.Visibility = Visibility.Visible;
@@ -218,8 +251,7 @@ namespace Visual_Random_Generator
                 TextBoxD.Text = new BigInteger(Algorithm.D.Data.ToArray()).ToString("X32");
                 TextBoxK.Text = new BigInteger(Algorithm.K.Data.ToArray()).ToString("X32");
 
-                await Task.Delay(1000);
-                LabelMain.Foreground = Brushes.Black;
+                //LabelMain.Foreground = Brushes.Black;
             }
             IsAlreadyRun = true;
 
@@ -290,7 +322,7 @@ namespace Visual_Random_Generator
                 return;
             var bitN = value % 8;
             var byteN = value / 8;
-            Algorithm.S.Data[byteN] ^= (byte) (1 << bitN);
+            Algorithm.S.Data[byteN] ^= (byte)(1 << bitN);
             TextBoxS.Text = new BigInteger(Algorithm.S.Data.ToArray()).ToString("X32");
         }
 
